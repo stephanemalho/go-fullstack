@@ -1,37 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const Thing = require('../models/things');
+const stuffCtrl = require('../controlers/stuff');
 
-router.post('/', (req, res, next) => {
-  delete req.body._id;
-  const thing = new Thing({
-    ...req.body
-  });
-  thing.save()
-  .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
-  .catch(error => res.status(400).json({ error }));
-});
-
-router.put('/:id', (req, res, next) => {
-  Thing.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id }) // update one element selecting him by its id
-    .then(() => res.status(200).json({ message: 'Objet modifié !'}))
-    .catch(error => res.status(400).json({ error }));
-});
-
-router.delete('/:id', (req, res, next) => {
-  Thing.deleteOne({ _id: req.params.id }) // delete one element selecting him by its id
-    .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
-    .catch(error => res.status(400).json({ error }));
-});
-router.get('/:id', (req, res, next) => {
-  Thing.findOne({ _id: req.params.id }) // find one element and select him by its id
-    .then(thing => res.status(200).json(thing))
-    .catch(error => res.status(404).json({ error }));
-});
-router.get('/', (req, res, next) => {
-  Thing.find() // find all elements
-  .then(things => res.status(200).json(things))
-  .catch(error => res.status(400).json({ error }));
-  });
+router.post('/', stuffCtrl.createThing);
+router.put('/:id',stuffCtrl.modifyThing);
+router.delete('/:id',stuffCtrl.deleteThing);
+router.get('/:id', stuffCtrl.oneThing);
+router.get('/',stuffCtrl.allThings);
 
   module.exports = router;
